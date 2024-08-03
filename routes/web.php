@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PharmacyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +18,12 @@ use App\Http\Controllers\ProductController;
 Route::get('/', [ProductController::class, 'index'])->name('home');
 
 Route::resource('products', ProductController::class);
+
+Route::resource('pharmacies', PharmacyController::class);
+
+Route::group(['prefix' => 'pharmacies'], function () {
+    Route::post('{pharmacy}/add-product', [PharmacyController::class, 'addProduct'])->name('pharmacies.add-product');
+    Route::post('{pharmacy}/remove-product', [PharmacyController::class, 'removeProduct'])->name('pharmacies.remove-product');
+});
+
+

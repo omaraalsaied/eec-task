@@ -12,7 +12,8 @@ class PharmacyController extends Controller
      */
     public function index()
     {
-        //
+        $pharmacies = Pharmacy::paginate(20);
+        return view('pharmacies.index', compact('pharmacies'));
     }
 
     /**
@@ -20,7 +21,7 @@ class PharmacyController extends Controller
      */
     public function create()
     {
-        //
+        return view('pharmacies.form');
     }
 
     /**
@@ -28,7 +29,13 @@ class PharmacyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'address' => 'required',
+        ]);
+
+        $pharmacy = Pharmacy::create($validatedData);
+        return redirect()->route('pharmacies.show', $pharmacy)->with('success', 'Pharmacy created successfully.');
     }
 
     /**
@@ -36,7 +43,8 @@ class PharmacyController extends Controller
      */
     public function show(Pharmacy $pharmacy)
     {
-        //
+        $pharmacy->load('products');
+        return view('pharmacies.show', compact('pharmacy'));
     }
 
     /**
@@ -44,7 +52,7 @@ class PharmacyController extends Controller
      */
     public function edit(Pharmacy $pharmacy)
     {
-        //
+        return view('pharmacies.form', compact('pharmacy'));
     }
 
     /**
@@ -52,7 +60,13 @@ class PharmacyController extends Controller
      */
     public function update(Request $request, Pharmacy $pharmacy)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'address' => 'required',
+        ]);
+
+        $pharmacy->update($validatedData);
+        return redirect()->route('pharmacies.show', $pharmacy)->with('success', 'Pharmacy updated successfully.');
     }
 
     /**
@@ -60,6 +74,28 @@ class PharmacyController extends Controller
      */
     public function destroy(Pharmacy $pharmacy)
     {
-        //
+        $pharmacy->delete();
+        return redirect()->route('pharmacies.index')->with('success', 'Pharmacy deleted successfully.');
+
+    }
+
+    public function addProduct(Request $request, Pharmacy $pharmacy)
+    {
+        $validatedData = $request->validate([
+            'product_id' => 'required|exists:products,id',
+        ]);
+
+        $pharmacy->products()->attach($validatedData['product_id']);
+        return redirect()->route('pharmacies.show', $pharmacy)->with('success', 'Product added to pharmacy successfully.');
+    }
+
+    public function removeProduct(Request $request, Pharmacy $pharmacy)
+    {
+        $validatedData = $request->validate([
+            'product_id' => 'required|exists:products,id',
+        ]);
+
+        $pharmacy->products()->detach($validatedData['product_id']);
+        return redirect()->route('pharmacies.show', $pharmacy)->with('success', 'Product removed from pharmacy successfully.');
     }
 }

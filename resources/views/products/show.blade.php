@@ -28,6 +28,33 @@
 
     <div class="row mt-5">
         <div class="col-12">
+            <h2>Availability in Pharmacies</h2>
+            @if($product->pharmacies->isNotEmpty())
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Pharmacy Name</th>
+                            <th>Address</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($product->pharmacies as $pharmacy)
+                            <tr>
+                                <td>{{ $pharmacy->name }}</td>
+                                <td>{{ $pharmacy->address }}</td>
+                                <td>${{ number_format($pharmacy->pivot->price ?? $product->price, 2) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p>This product is not available in any pharmacies.</p>
+            @endif
+        </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
             <h2>Product Details</h2>
             <table class="table table-striped">
                 <tbody>

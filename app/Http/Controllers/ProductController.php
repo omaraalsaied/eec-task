@@ -33,7 +33,7 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'description' => 'min:3|max:1000',
-            'img' => 'image|mimes:jpeg,png,jpg,gif|max:2048', 
+            'img' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
         ]);
@@ -52,6 +52,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $product->load('pharmacies');
         return view('products.show', compact('product'));
     }
 
