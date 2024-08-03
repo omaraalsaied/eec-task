@@ -21,6 +21,8 @@ Route::resource('products', ProductController::class);
 
 Route::resource('pharmacies', PharmacyController::class);
 
+Route::get('/search', [ProductController::class, 'search'])->name('products.search');
+
 Route::group(['prefix' => 'pharmacies'], function () {
     Route::post('{pharmacy}/add-product', [PharmacyController::class, 'addProduct'])->name('pharmacies.add-product');
     Route::post('{pharmacy}/remove-product', [PharmacyController::class, 'removeProduct'])->name('pharmacies.remove-product');

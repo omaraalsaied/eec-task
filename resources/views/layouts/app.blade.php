@@ -22,6 +22,10 @@
                         <a class="nav-link" href="{{route('pharmacies.index')}}">Pharmacies</a>
                     </li>
                 </ul>
+                <form class="d-flex" action="{{ route('products.search') }}" method="GET">
+                    <input class="form-control me-2" type="search" name="query" placeholder="Search products" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
             </div>
         </div>
     </nav>
@@ -32,5 +36,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
 
+</html>
