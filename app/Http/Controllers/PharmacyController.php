@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pharmacy;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class PharmacyController extends Controller
@@ -83,9 +84,10 @@ class PharmacyController extends Controller
     {
         $validatedData = $request->validate([
             'product_id' => 'required|exists:products,id',
+            'price' => 'required|numeric|min:0'
         ]);
 
-        $pharmacy->products()->attach($validatedData['product_id']);
+        $pharmacy->products()->attach($validatedData['product_id'], ['price' => $validatedData['price']]);
         return redirect()->route('pharmacies.show', $pharmacy)->with('success', 'Product added to pharmacy successfully.');
     }
 
@@ -97,5 +99,17 @@ class PharmacyController extends Controller
 
         $pharmacy->products()->detach($validatedData['product_id']);
         return redirect()->route('pharmacies.show', $pharmacy)->with('success', 'Product removed from pharmacy successfully.');
+    }
+
+    public function updateProductPrice (Request $request, Pharmacy $pharmacy, Product $product)
+    {
+        $validatedData = $request->validate([
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        $pharmacy->products()->updateExistingPivot($product->id, ['price' => $validatedData['price']]);
+
+        return redirect()->route('pharmacies.show', $pharmacy)->with('success', 'Product price updated successfully.');
+
     }
 }

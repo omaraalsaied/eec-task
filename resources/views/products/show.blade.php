@@ -12,7 +12,7 @@
             <h1>{{ $product->title }}</h1>
             <p class="lead">{{ $product->description }}</p>
             <hr>
-            <p><strong>Price:</strong> ${{ number_format($product->price, 2) }}</p>
+            <p><strong>Base Price:</strong> ${{ number_format($product->price, 2) }}</p>
             <p><strong>Quantity in Stock:</strong> {{ $product->quantity }}</p>
             <hr>
             <div class="d-flex justify-content-between align-items-center">

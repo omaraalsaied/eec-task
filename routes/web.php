@@ -24,6 +24,8 @@ Route::resource('pharmacies', PharmacyController::class);
 Route::group(['prefix' => 'pharmacies'], function () {
     Route::post('{pharmacy}/add-product', [PharmacyController::class, 'addProduct'])->name('pharmacies.add-product');
     Route::post('{pharmacy}/remove-product', [PharmacyController::class, 'removeProduct'])->name('pharmacies.remove-product');
+    Route::patch('{pharmacy}/products/{product}/update-price', [PharmacyController::class, 'updateProductPrice'])->name('pharmacies.update-product-price');
+
 });
 
 

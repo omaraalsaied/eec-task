@@ -21,26 +21,66 @@
         </div>
 
         <h2>Products</h2>
-        <div class="row">
-            @forelse($pharmacy->products as $product)
-                <div class="col-md-4 mb-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $product->title }}</h5>
-                            <p class="card-text">Price: ${{ number_format($product->price, 2) }}</p>
-                            <form action="{{ route('pharmacies.remove-product', $pharmacy) }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                            </form>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Description</th>
+                        <th>Price in This Pharmacy</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($pharmacy->products as $product)
+                        <tr>
+                            <td> <a href="{{ route('products.show', $product) }}">{{ $product->title }} </a></td>
+                            <td>{{ Str::limit($product->description, 100) }}</td>
+                            <td>${{ number_format($product->pivot->price, 2) }}</td>
+                            <td>
+                                <form action="{{ route('pharmacies.remove-product', $pharmacy) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this product?')">Remove</button>
+                                </form>
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editPriceModal{{ $product->id }}">
+                                    Edit Price
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Edit Price Modal -->
+                        <div class="modal fade" id="editPriceModal{{ $product->id }}" tabindex="-1" aria-labelledby="editPriceModalLabel{{ $product->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editPriceModalLabel{{ $product->id }}">Edit Price for {{ $product->title }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ route('pharmacies.update-product-price', [$pharmacy, $product]) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="price{{ $product->id }}" class="form-label">New Price</label>
+                                                <input type="number" class="form-control" id="price{{ $product->id }}" name="price" value="{{ $product->pivot->price }}" step="0.01" required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Update Price</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            @empty
-                <div class="col-12">
-                    <p>No products in this pharmacy.</p>
-                </div>
-            @endforelse
+                    @empty
+                        <tr>
+                            <td colspan="4">No products in this pharmacy.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
         <h3 class="mt-4">Add Product</h3>
@@ -53,6 +93,9 @@
                         <option value="{{ $product->id }}">{{ $product->title }}</option>
                     @endforeach
                 </select>
+                <div class="col-md-4">
+                    <input type="number" name="price" class="form-control" placeholder="Price" step="0.01" required>
+                </div>
                 <button type="submit" class="btn btn-primary">Add Product</button>
             </div>
         </form>
