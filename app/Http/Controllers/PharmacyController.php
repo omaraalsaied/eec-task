@@ -97,6 +97,11 @@ class PharmacyController extends Controller
             'product_id' => 'required|exists:products,id',
         ]);
 
+        if ($pharmacy->products()->where('product_id', $request->product_id)->exists()) {
+            return redirect()->back()->with('error', 'This product is already associated with the pharmacy.');
+        }
+
+
         $pharmacy->products()->detach($validatedData['product_id']);
         return redirect()->route('pharmacies.show', $pharmacy)->with('success', 'Product removed from pharmacy successfully.');
     }

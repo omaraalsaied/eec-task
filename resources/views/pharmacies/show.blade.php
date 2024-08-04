@@ -83,13 +83,18 @@
             </table>
         </div>
 
+        @php
+            $existing_products = $pharmacy->products->pluck('id')->toArray();
+            $availableProducts = \App\Models\Product::whereNotIn('id', $existing_products)->get();
+        @endphp
+
         <h3 class="mt-4">Add Product</h3>
         <form action="{{ route('pharmacies.add-product', $pharmacy) }}" method="POST" class="mb-4">
             @csrf
             <div class="input-group">
                 <select name="product_id" class="form-select" required>
                     <option value="">Select a product</option>
-                    @foreach(App\Models\Product::all() as $product)
+                    @foreach($availableProducts as $product)
                         <option value="{{ $product->id }}">{{ $product->title }}</option>
                     @endforeach
                 </select>
