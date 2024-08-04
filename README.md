@@ -1,66 +1,111 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# EEC TASK
+this is a simple web app for product/pharmacy inventory, it doesn't require authentication. built using laravel, MySQL & Bootstrap CDN.
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Installation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+To test this project firstly clone the repo then
 
-## Learning Laravel
+```bash
+  cd /eec-task
+  composer install
+```
+configure your .env file by adding the Database identifiers required,
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+then 
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+    php artisan migrate
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+to fill out the Database a bit and see things a bit clear
 
-## Laravel Sponsors
+```bash
+    php artisan db:seed
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+to run the project either place it in your local server APACHE/NGINX or you can run 
 
-### Premium Partners
+``` bash
+    php artisan serve
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## API Reference
+### Products
+#### Product Resource
 
-## Code of Conduct
+```http
+  /api/v1/products
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Product search
 
-## Security Vulnerabilities
+```http
+    POST /api/v1/products/search
+```
+| Parameter     | Type          | Description                       |
+| :--------     | :-------      | :-------------------------------- |
+| `query`       | `string`      | **Required**. peices of the Product to search for |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+----------------
+### Pharmacies
+#### Pharmacies Resource
 
-## License
+```http
+  /api/v1/pharmacies
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Pharmacy Product add
+
+```http
+    POST /api/v1/pharmacies/{pharmacy}/add-product
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `product_id`      | `string` | **Required**. Id of product to add to the pharmacy |
+| `price`      | `number` | **Required**. price of product to add to the pharmacy |
+
+### Pharmacy remove Product
+
+```http
+    POST /api/v1/pharmacies/{pharmacy}/remove-product
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `product_id`      | `string` | **Required**. Id of product to remove from the pharmacy |
+
+
+### Pharmacy Update Product's Price
+```http
+    PATCH /api/v1/pharmacies/{pharmacy}/products/{product}/update-price
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `price`      | `number` | **Required**. price of product to updated in the pharmacy |
+
+
+
+### Pharmacy Available to add Products
+Used to get The products that aren't linked to the pharmacy yet, so you can use IDs from the result and use it alongside the Pharmacy id to add it with a price
+
+```http
+    GET {pharmacy}/available-products
+```
+
+
+
+## Commands
+
+### Get Cheapest 5 Pharmacies That sell a product
+```bash
+php artisan products:search-cheap {product_id}
+```
+
+replace the {product_id} with the id of the product you're searching for.
