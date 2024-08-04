@@ -31,6 +31,15 @@ to run the project either place it in your local server APACHE/NGINX or you can 
 ``` bash
     php artisan serve
 ```
+to upload the Images properly I'd like from you to run this command.
+
+``` bash
+    php artisan storage:link
+```
+
+### Note 
+The Database seeders won't add image to products as i marked them a nullable "non-required field" 
+
 
 
 
