@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Product;
 use App\Models\Pharmacy;
+use App\Services\ProductService;
 use Illuminate\Console\Command;
 
 class SearchCheapestPharmacies extends Command

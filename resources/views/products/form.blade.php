@@ -22,7 +22,7 @@
 
         <div class="mb-3">
             <label for="image" class="form-label">Image</label>
-            <input type="file" class="form-control" id="image" name="img" {{ isset($product) ? '' : 'required' }}>
+            <input type="file" class="form-control" id="image" name="img">
             @if(isset($product) && $product->img)
                 <img src="{{ $product->image_url }}" alt="{{ $product->title }}" class="mt-2" style="max-width: 200px;">
             @endif

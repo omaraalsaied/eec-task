@@ -4,16 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Services\ProductService;
+use App\Services\PharmacyService;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    public function __construct(protected ProductService $productService)
+    {}
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $products = Product::paginate(20);
+        $products = $this->productService->getAllProducts();
         return view('products.index', compact('products'));
     }
 
@@ -43,8 +47,8 @@ class ProductController extends Controller
             $validatedData['img'] = $imgPath;
         }
 
-        $product = Product::create($validatedData);
-        return response()->json($product, 201);
+        $product = $this->productService->createProduct($validatedData);
+        return redirect()->route('products.show', $product)->with('success', 'Product Created Successfully');
     }
 
     /**
@@ -86,7 +90,7 @@ class ProductController extends Controller
             $validatedData['img'] = $imgPath;
         }
         $product->update($validatedData);
-        return response()->json($product);
+        return redirect()->route('products.show', $product)->with('success', 'Product Updated Successfully');
     }
 
     /**
@@ -107,9 +111,7 @@ class ProductController extends Controller
     {
         $query = $request->input('query');
 
-        $products = Product::where('title', 'LIKE', "%{$query}%")
-            ->orWhere('description', 'LIKE', "%{$query}%")
-            ->paginate(10);
+        $products = $this->productService->search($query, 10);
 
         return view('products.search', compact('products', 'query'));
     }

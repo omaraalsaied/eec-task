@@ -4,16 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Pharmacy;
 use App\Models\Product;
+use App\Services\PharmacyService;
 use Illuminate\Http\Request;
 
 class PharmacyController extends Controller
 {
+
+    public function __construct(protected PharmacyService $pharmacyService)
+    {}
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $pharmacies = Pharmacy::paginate(20);
+        $pharmacies = $this->pharmacyService->getAllPharmacies();
         return view('pharmacies.index', compact('pharmacies'));
     }
 
@@ -35,7 +39,7 @@ class PharmacyController extends Controller
             'address' => 'required',
         ]);
 
-        $pharmacy = Pharmacy::create($validatedData);
+        $pharmacy = $this->pharmacyService->createPharamcy($validatedData);
         return redirect()->route('pharmacies.show', $pharmacy)->with('success', 'Pharmacy created successfully.');
     }
 
